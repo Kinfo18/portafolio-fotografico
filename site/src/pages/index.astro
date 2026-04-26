@@ -79,4 +79,13 @@ import '../styles/global.css';
 
     sections.forEach(section => observer.observe(section));
   }
+
+  // Blur-up global: applies to Hero, About, Cameras and any other blur-img outside Portfolio
+  document.querySelectorAll<HTMLImageElement>('img.blur-img').forEach(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+    }
+  });
 </script>

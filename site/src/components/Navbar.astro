@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import logoImg from '../assets/images/logo.png';
+
 const navLinks = [
   { href: '#portafolio', label: 'Portafolio' },
   { href: '#sobre-mi', label: 'Sobre mí' },
@@ -11,7 +14,7 @@ const navLinks = [
 <header class="navbar" id="navbar" role="banner">
   <nav class="navbar__inner container" aria-label="Navegación principal">
     <a href="/" class="navbar__logo" aria-label="Valentina Ríos Fotografía - Inicio">
-      <img src="/images/logo.png" alt="Valentina Ríos Fotografía" width="44" height="44" />
+      <Image src={logoImg} alt="Valentina Ríos Fotografía" width={36} height={36} format="webp" />
       <span class="navbar__name">Valentina Ríos</span>
     </a>
 

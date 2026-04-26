@@ -1,9 +1,13 @@
 ---
+import { Image } from 'astro:assets';
+import imgEosR5 from '../assets/images/camaras/eos-r5-c.png';
+import imgNikonZ7 from '../assets/images/camaras/nikon-Z-7II.png';
+
 const cameras = [
   {
     name: 'Canon EOS R5',
     subtitle: 'Mirrorless Full Frame · Fotografía y Video 8K',
-    image: '/images/camaras/eos-r5-c.png',
+    image: imgEosR5,
     highlight: 'Cámara principal',
     specs: [
       { label: 'Sensor', value: 'CMOS Full Frame 45 MP' },
@@ -20,7 +24,7 @@ const cameras = [
   {
     name: 'Nikon Z7 II',
     subtitle: 'Mirrorless Full Frame · Resolución extrema',
-    image: '/images/camaras/nikon-Z-7II.png',
+    image: imgNikonZ7,
     highlight: 'Segunda cámara',
     specs: [
       { label: 'Sensor', value: 'CMOS BSI Full Frame 45.7 MP' },
@@ -57,13 +61,14 @@ const cameras = [
           <div class="cameras__card-badge">{camera.highlight}</div>
 
           <div class="cameras__img-wrap">
-            <img
+            <Image
               src={camera.image}
               alt={`${camera.name} - cámara fotográfica profesional`}
-              width="360"
-              height="260"
+              width={360}
+              format="webp"
+              quality={85}
               loading="lazy"
-              decoding="async"
+              class="blur-img"
             />
           </div>
 

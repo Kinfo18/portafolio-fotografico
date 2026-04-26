@@ -1,4 +1,6 @@
 ---
+import ogImageAsset from '../assets/images/fotografa/fotografa_1.jpg';
+
 interface Props {
   title: string;
   description: string;
@@ -9,12 +11,13 @@ interface Props {
 const {
   title,
   description,
-  ogImage = '/images/fotografa/fotografa_1.jpg',
+  ogImage,
   canonical = Astro.url.href,
 } = Astro.props;
 
 const siteUrl = 'https://valentinariosfotografia.com';
 const fullTitle = title === 'Valentina Ríos Fotografía' ? title : `${title} | Valentina Ríos Fotografía`;
+const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}${ogImageAsset.src}`;
 
 const schemaOrg = {
   '@context': 'https://schema.org',
@@ -23,7 +26,7 @@ const schemaOrg = {
   jobTitle: 'Fotógrafa Documental y de Naturaleza',
   description: 'Fotógrafa documental y de naturaleza con más de 10 años de experiencia. Premio Simón Bolívar de Periodismo 2017. Finalista World Press Photo 2022.',
   url: siteUrl,
-  image: `${siteUrl}/images/fotografa/fotografa_1.jpg`,
+  image: `${siteUrl}${ogImageAsset.src}`,
   email: 'valentina@riosfotografia.com',
   telephone: '+57 310 000 0000',
   address: {
@@ -73,7 +76,7 @@ const schemaOrg = {
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:locale" content="es_CO" />
     <meta property="og:site_name" content="Valentina Ríos Fotografía" />
 
@@ -83,11 +86,11 @@ const schemaOrg = {
     <meta name="twitter:creator" content="@ValenGraphics" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/images/logo.png" />
-    <link rel="apple-touch-icon" href="/images/logo.png" />
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
 
     <!-- Preconnect fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import logoImg from '../assets/images/logo.png';
+
 const currentYear = new Date().getFullYear();
 ---
 
@@ -6,7 +9,7 @@ const currentYear = new Date().getFullYear();
   <div class="container footer__inner">
     <div class="footer__brand">
       <a href="/" class="footer__logo" aria-label="Valentina Ríos Fotografía - Inicio">
-        <img src="/images/logo.png" alt="Logo Valentina Ríos Fotografía" width="36" height="36" />
+        <Image src={logoImg} alt="Logo Valentina Ríos Fotografía" width={36} height={36} format="webp" />
         <span>Valentina Ríos</span>
       </a>
       <p class="footer__tagline">

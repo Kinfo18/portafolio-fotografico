@@ -1,4 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+import fotografaPrincipal from '../assets/images/fotografa/fotografa_1-sin fondo.png';
+import floatNaturaleza from '../assets/images/fotografias/naturaleza/naturaleza_1.jpg';
+import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -72,11 +76,12 @@
 
     <div class="hero__visual" aria-hidden="true">
       <div class="hero__img-wrapper">
-        <img
-          src="/images/fotografa/fotografa_1-sin fondo.png"
+        <Image
+          src={fotografaPrincipal}
           alt="Valentina Ríos Mendoza, fotógrafa documental"
-          width="480"
-          height="600"
+          width={480}
+          format="webp"
+          quality={85}
           fetchpriority="high"
           class="hero__img"
         />
@@ -102,8 +107,8 @@
       </div>
 
       <div class="hero__floating-imgs">
-        <img src="/images/fotografias/naturaleza/naturaleza_1.jpg" alt="" width="120" height="90" class="hero__float hero__float--1" loading="lazy" />
-        <img src="/images/fotografias/retratos/retrato_1.jpg" alt="" width="100" height="130" class="hero__float hero__float--2" loading="lazy" />
+        <Image src={floatNaturaleza} alt="" width={120} format="avif" quality={70} loading="lazy" class="hero__float hero__float--1 blur-img" />
+        <Image src={floatRetrato} alt="" width={100} format="avif" quality={70} loading="lazy" class="hero__float hero__float--2 blur-img" />
       </div>
     </div>
   </div>

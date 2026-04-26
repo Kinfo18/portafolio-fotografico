@@ -1,27 +1,32 @@
 ---
+import { Image } from 'astro:assets';
+import foto2 from '../assets/images/fotografa/fotografa_2.jpg';
+import foto3 from '../assets/images/fotografa/fotografa_3.jpg';
 ---
 
 <section class="about" id="sobre-mi" aria-labelledby="about-heading">
   <div class="container about__inner">
     <div class="about__images">
       <div class="about__img-main">
-        <img
-          src="/images/fotografa/fotografa_2.jpg"
+        <Image
+          src={foto2}
           alt="Valentina Ríos Mendoza en campo fotográfico"
-          width="480"
-          height="600"
+          width={480}
+          format="avif"
+          quality={80}
           loading="lazy"
-          decoding="async"
+          class="blur-img"
         />
       </div>
       <div class="about__img-secondary">
-        <img
-          src="/images/fotografa/fotografa_3.jpg"
+        <Image
+          src={foto3}
           alt="Valentina Ríos Mendoza, retrato profesional"
-          width="280"
-          height="360"
+          width={280}
+          format="avif"
+          quality={80}
           loading="lazy"
-          decoding="async"
+          class="blur-img"
         />
       </div>
       <div class="about__quote-card" aria-hidden="true">

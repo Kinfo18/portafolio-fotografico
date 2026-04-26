@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 const categories = [
   { id: 'all', label: 'Todo' },
   { id: 'naturaleza', label: 'Naturaleza' },
@@ -17,112 +20,116 @@ const categories = [
   { id: 'naturaleza-muerta', label: 'Naturaleza muerta' },
 ];
 
-const photos = [
-  // Naturaleza y Territorio (feature category - más fotos)
-  ...Array.from({length: 14}, (_, i) => ({
-    src: `/images/fotografias/naturaleza/naturaleza_${i + 1}.jpg`,
+// Import all portfolio images at build time for Astro optimization
+const allImgs = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/images/fotografias/**/*.{jpg,jpeg,png}',
+  { eager: true }
+);
+
+function findImg(slug: string): ImageMetadata | undefined {
+  const key = Object.keys(allImgs).find(k => k.endsWith(slug));
+  return key ? allImgs[key].default : undefined;
+}
+
+type PhotoSize = 'normal' | 'tall' | 'wide' | 'large';
+interface PhotoDef { slug: string; alt: string; category: string; size: PhotoSize; }
+
+const photoDefs: PhotoDef[] = [
+  ...Array.from({length: 14}, (_, i): PhotoDef => ({
+    slug: `naturaleza/naturaleza_${i + 1}.jpg`,
     alt: `Fotografía documental de naturaleza y territorio en Colombia ${i + 1}`,
     category: 'naturaleza',
     size: i === 0 ? 'large' : i % 5 === 0 ? 'tall' : 'normal',
   })),
-  ...Array.from({length: 8}, (_, i) => ({
-    src: `/images/fotografias/naturaleza/territorio_${i + 1}.jpg`,
+  ...Array.from({length: 8}, (_, i): PhotoDef => ({
+    slug: `naturaleza/territorio_${i + 1}.jpg`,
     alt: `Fotografía documental de territorio colombiano ${i + 1}`,
     category: 'naturaleza',
     size: i % 4 === 1 ? 'wide' : 'normal',
   })),
-  // Retratos
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/retratos/retrato_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `retratos/retrato_${i + 1}.jpg`,
     alt: `Retrato fotográfico ${i + 1}`,
     category: 'retratos',
     size: i === 0 ? 'large' : i % 3 === 0 ? 'tall' : 'normal',
   })),
-  // Paisajes
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/paisajes/paisaje_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `paisajes/paisaje_${i + 1}.jpg`,
     alt: `Fotografía de paisaje ${i + 1}`,
     category: 'paisajes',
     size: i === 0 ? 'wide' : 'normal',
   })),
-  // Moda
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/moda/moda_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `moda/moda_${i + 1}.jpg`,
     alt: `Fotografía de moda ${i + 1}`,
     category: 'moda',
     size: i === 0 ? 'tall' : 'normal',
   })),
-  // Maternidad
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/maternidad/maternidad_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `maternidad/maternidad_${i + 1}.jpg`,
     alt: `Fotografía de maternidad ${i + 1}`,
     category: 'maternidad',
     size: i % 3 === 1 ? 'tall' : 'normal',
   })),
-  // Arquitectura
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/arquitectura/arquitectura_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `arquitectura/arquitectura_${i + 1}.jpg`,
     alt: `Fotografía de arquitectura ${i + 1}`,
     category: 'arquitectura',
     size: i === 0 ? 'wide' : 'normal',
   })),
-  // Deportiva
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/deportiva/deporte_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `deportiva/deporte_${i + 1}.jpg`,
     alt: `Fotografía deportiva ${i + 1}`,
     category: 'deportiva',
     size: 'normal',
   })),
-  // Eventos
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/eventos/evento_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `eventos/evento_${i + 1}.jpg`,
     alt: `Fotografía de eventos ${i + 1}`,
     category: 'eventos',
     size: i === 0 ? 'wide' : 'normal',
   })),
-  // Nocturna
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/nocturna/nocturna_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `nocturna/nocturna_${i + 1}.jpg`,
     alt: `Fotografía nocturna de larga exposición ${i + 1}`,
     category: 'nocturna',
     size: i % 2 === 0 ? 'wide' : 'normal',
   })),
-  // Alimentos
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/alimentos/alimentos_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `alimentos/alimentos_${i + 1}.jpg`,
     alt: `Fotografía de alimentos ${i + 1}`,
     category: 'alimentos',
     size: 'normal',
   })),
-  // De calle
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/de-calle/de_calle_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `de-calle/de_calle_${i + 1}.jpg`,
     alt: `Fotografía de calle ${i + 1}`,
     category: 'de-calle',
     size: i % 3 === 0 ? 'tall' : 'normal',
   })),
-  // Interiores
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/interiores/interiores_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `interiores/interiores_${i + 1}.jpg`,
     alt: `Fotografía de interiores ${i + 1}`,
     category: 'interiores',
     size: i === 0 ? 'wide' : 'normal',
   })),
-  // Colores
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/colores/colores_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `colores/colores_${i + 1}.jpg`,
     alt: `Fotografía mezcla de color ${i + 1}`,
     category: 'colores',
     size: 'normal',
   })),
-  // Naturaleza muerta
-  ...Array.from({length: 5}, (_, i) => ({
-    src: `/images/fotografias/naturaleza-muerta/naturaleza_muerta_${i + 1}.jpg`,
+  ...Array.from({length: 5}, (_, i): PhotoDef => ({
+    slug: `naturaleza-muerta/naturaleza_muerta_${i + 1}.jpg`,
     alt: `Fotografía de naturaleza muerta ${i + 1}`,
     category: 'naturaleza-muerta',
     size: 'normal',
   })),
 ];
+
+const photos = photoDefs
+  .map(def => ({ ...def, img: findImg(def.slug) }))
+  .filter((p): p is typeof p & { img: ImageMetadata } => p.img !== undefined);
 ---
 
 <section class="portfolio" id="portafolio" aria-labelledby="portfolio-heading">
@@ -156,13 +163,15 @@ const photos = [
           data-category={photo.category}
         >
           <div class="portfolio__item-inner">
-            <img
-              src={photo.src}
+            <Image
+              src={photo.img}
               alt={photo.alt}
+              width={900}
+              format="avif"
+              quality={75}
               loading="lazy"
-              decoding="async"
-              width="400"
-              height="300"
+              sizes="(max-width: 768px) calc(50vw - 1rem), calc(25vw - 1rem)"
+              class="blur-img"
             />
             <div class="portfolio__overlay" aria-hidden="true">
               <button class="portfolio__zoom" aria-label={`Ver ${photo.alt} en pantalla completa`}>
@@ -558,5 +567,14 @@ const photos = [
     (item as HTMLElement).style.transform = 'translateY(20px)';
     (item as HTMLElement).style.transition = `opacity 0.5s ${i * 0.03}s ease, transform 0.5s ${i * 0.03}s ease`;
     observer.observe(item);
+  });
+
+  // Blur-up: mark images as loaded once they decode
+  document.querySelectorAll<HTMLImageElement>('.portfolio__item img.blur-img').forEach(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+    }
   });
 </script>
