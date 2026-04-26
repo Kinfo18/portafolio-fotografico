@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Portfolio from '../components/Portfolio.astro';
+import About from '../components/About.astro';
+import Awards from '../components/Awards.astro';
+import Cameras from '../components/Cameras.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout
+  title="Valentina Ríos Fotografía"
+  description="Fotógrafa documental y de naturaleza. Premio Simón Bolívar 2017 · Finalista World Press Photo 2022 · National Geographic. Capturando la intersección entre territorio, biodiversidad y comunidades humanas en Colombia."
+>
+  <Navbar />
+  <main id="main-content">
+    <Hero />
+    <Portfolio />
+    <About />
+    <Awards />
+    <Cameras />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style is:global>
+  :target {
+    scroll-margin-top: calc(var(--nav-height) + 2rem);
+  }
+
+  .about,
+  .awards,
+  .cameras,
+  .contact {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .about.visible,
+  .awards.visible,
+  .cameras.visible,
+  .contact.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about,
+    .awards,
+    .cameras,
+    .contact {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReduced) {
+    const sections = document.querySelectorAll('.about, .awards, .cameras, .contact');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+
+    sections.forEach(section => observer.observe(section));
+  }
+</script>

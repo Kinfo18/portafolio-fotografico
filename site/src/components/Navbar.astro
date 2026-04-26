@@ -1,0 +1,250 @@
+---
+const navLinks = [
+  { href: '#portafolio', label: 'Portafolio' },
+  { href: '#sobre-mi', label: 'Sobre mí' },
+  { href: '#reconocimientos', label: 'Reconocimientos' },
+  { href: '#equipo', label: 'Equipo' },
+  { href: '#contacto', label: 'Contacto' },
+];
+---
+
+<header class="navbar" id="navbar" role="banner">
+  <nav class="navbar__inner container" aria-label="Navegación principal">
+    <a href="/" class="navbar__logo" aria-label="Valentina Ríos Fotografía - Inicio">
+      <img src="/images/logo.png" alt="Valentina Ríos Fotografía" width="44" height="44" />
+      <span class="navbar__name">Valentina Ríos</span>
+    </a>
+
+    <ul class="navbar__links" role="list">
+      {navLinks.map(link => (
+        <li>
+          <a href={link.href} class="navbar__link">{link.label}</a>
+        </li>
+      ))}
+    </ul>
+
+    <a href="#contacto" class="btn-primary navbar__cta">Trabajemos juntos</a>
+
+    <button
+      class="navbar__toggle"
+      id="nav-toggle"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+      aria-label="Abrir menú de navegación"
+    >
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+    </button>
+  </nav>
+
+  <div class="navbar__mobile" id="nav-menu" aria-hidden="true">
+    <ul role="list">
+      {navLinks.map(link => (
+        <li>
+          <a href={link.href} class="navbar__mobile-link">{link.label}</a>
+        </li>
+      ))}
+    </ul>
+    <a href="#contacto" class="btn-primary" style="margin-top: 1rem; width: 100%; justify-content: center;">Trabajemos juntos</a>
+  </div>
+</header>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 50;
+    border-radius: var(--radius-xl);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color3);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+  }
+
+  .navbar.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .navbar__inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 64px;
+  }
+
+  .navbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .navbar__logo img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: contain;
+  }
+
+  .navbar__name {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin-left: auto;
+  }
+
+  .navbar__link {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 0.5rem 0.875rem;
+    border-radius: 100px;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .navbar__link:hover {
+    color: var(--text-primary);
+    background: var(--color4);
+  }
+
+  .navbar__cta {
+    font-size: 0.8rem;
+    padding: 0.625rem 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .navbar__toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    margin-left: auto;
+  }
+
+  .navbar__toggle:hover {
+    background: var(--color4);
+  }
+
+  .navbar__toggle-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: all var(--transition-normal);
+  }
+
+  .navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .navbar__mobile {
+    display: none;
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--color3);
+  }
+
+  .navbar__mobile ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .navbar__mobile-link {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+
+  .navbar__mobile-link:hover {
+    color: var(--text-primary);
+    background: var(--color4);
+  }
+
+  .navbar__mobile.open {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .navbar__links,
+    .navbar__cta {
+      display: none;
+    }
+
+    .navbar__toggle {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .navbar__name {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const navbar = document.getElementById('navbar')!;
+  const toggle = document.getElementById('nav-toggle')!;
+  const menu = document.getElementById('nav-menu')!;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    menu.setAttribute('aria-hidden', String(isOpen));
+    menu.classList.toggle('open', !isOpen);
+  });
+
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-hidden', 'true');
+      menu.classList.remove('open');
+    });
+  });
+</script>

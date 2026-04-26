@@ -1,0 +1,106 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonical?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = '/images/fotografa/fotografa_1.jpg',
+  canonical = Astro.url.href,
+} = Astro.props;
+
+const siteUrl = 'https://valentinariosfotografia.com';
+const fullTitle = title === 'Valentina Ríos Fotografía' ? title : `${title} | Valentina Ríos Fotografía`;
+
+const schemaOrg = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Valentina Ríos Mendoza',
+  jobTitle: 'Fotógrafa Documental y de Naturaleza',
+  description: 'Fotógrafa documental y de naturaleza con más de 10 años de experiencia. Premio Simón Bolívar de Periodismo 2017. Finalista World Press Photo 2022.',
+  url: siteUrl,
+  image: `${siteUrl}/images/fotografa/fotografa_1.jpg`,
+  email: 'valentina@riosfotografia.com',
+  telephone: '+57 310 000 0000',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bogotá',
+    addressCountry: 'CO',
+  },
+  alumniOf: [
+    { '@type': 'EducationalOrganization', name: 'Universidad Externado de Colombia' },
+    { '@type': 'EducationalOrganization', name: 'School of Visual Arts de Nueva York' },
+  ],
+  award: [
+    'Premio Simón Bolívar de Periodismo - Mejor Fotografía (2017)',
+    'Finalista World Press Photo, categoría Naturaleza (2022)',
+    'Beca de Creación del Ministerio de Cultura de Colombia (2020)',
+    'Premio Lente Verde - Fotografía Ambiental Latinoamérica (2021)',
+    'Fotografía del Año, Festival Internacional de Fotografía de Cartagena (2023)',
+  ],
+  sameAs: [
+    'https://instagram.com/ValenGraphics',
+    'https://facebook.com/ValenGraphics',
+    'https://x.com/ValenGraphics',
+  ],
+  knowsAbout: [
+    'Fotografía Documental',
+    'Fotografía de Naturaleza',
+    'Fotoperiodismo',
+    'Fotografía de Vida Silvestre',
+    'Fotografía de Territorio',
+  ],
+};
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffb3c8" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content="Valentina Ríos Fotografía" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ValenGraphics" />
+    <meta name="twitter:creator" content="@ValenGraphics" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="apple-touch-icon" href="/images/logo.png" />
+
+    <!-- Preconnect fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+
+    <!-- Additional robots meta for EEAT -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="Valentina Ríos Mendoza" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

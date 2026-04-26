@@ -1,0 +1,424 @@
+---
+const socialLinks = [
+  {
+    name: 'Instagram',
+    handle: '@ValenGraphics',
+    url: 'https://instagram.com/ValenGraphics',
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`,
+  },
+  {
+    name: 'Facebook',
+    handle: '@ValenGraphics',
+    url: 'https://facebook.com/ValenGraphics',
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>`,
+  },
+  {
+    name: 'X / Twitter',
+    handle: '@ValenGraphics',
+    url: 'https://x.com/ValenGraphics',
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+  },
+];
+---
+
+<section class="contact" id="contacto" aria-labelledby="contact-heading">
+  <div class="container contact__inner">
+    <div class="contact__content">
+      <p class="section-label">Contacto</p>
+      <h2 class="contact__title" id="contact-heading">
+        ¿Tienes un proyecto<br />en mente?
+      </h2>
+      <p class="contact__desc">
+        Estoy disponible para proyectos documentales, campañas de conservación, publicaciones editoriales
+        y colaboraciones nacionales e internacionales.
+      </p>
+
+      <div class="contact__info">
+        <a href="mailto:valentina@riosfotografia.com" class="contact__info-item" aria-label="Enviar correo a Valentina Ríos">
+          <div class="contact__info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div>
+            <span class="contact__info-label">Email</span>
+            <span class="contact__info-value">valentina@riosfotografia.com</span>
+          </div>
+        </a>
+
+        <a href="tel:+573100000000" class="contact__info-item" aria-label="Llamar a Valentina Ríos">
+          <div class="contact__info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 16.92z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="contact__info-label">Teléfono</span>
+            <span class="contact__info-value">+57 310 000 0000</span>
+          </div>
+        </a>
+
+        <div class="contact__info-item">
+          <div class="contact__info-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <span class="contact__info-label">Ubicación</span>
+            <span class="contact__info-value">Bogotá, Colombia · Proyectos nacionales e internacionales</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact__social">
+        <p class="contact__social-label">Redes sociales</p>
+        <div class="contact__social-links">
+          {socialLinks.map(link => (
+            <a
+              href={link.url}
+              class="contact__social-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${link.name}: ${link.handle}`}
+            >
+              <Fragment set:html={link.icon} />
+              <span>{link.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="contact__form-wrap">
+      <form class="contact__form" action="#" method="post" aria-label="Formulario de contacto" novalidate>
+        <div class="contact__form-row">
+          <div class="contact__form-group">
+            <label for="contact-name" class="contact__form-label">Nombre completo <span aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="contact-name"
+              name="name"
+              class="contact__form-input"
+              placeholder="Tu nombre"
+              required
+              autocomplete="name"
+              aria-required="true"
+            />
+          </div>
+          <div class="contact__form-group">
+            <label for="contact-email" class="contact__form-label">Correo electrónico <span aria-hidden="true">*</span></label>
+            <input
+              type="email"
+              id="contact-email"
+              name="email"
+              class="contact__form-input"
+              placeholder="tu@correo.com"
+              required
+              autocomplete="email"
+              aria-required="true"
+            />
+          </div>
+        </div>
+
+        <div class="contact__form-group">
+          <label for="contact-project" class="contact__form-label">Tipo de proyecto</label>
+          <select id="contact-project" name="project" class="contact__form-input contact__form-select">
+            <option value="">Selecciona una opción</option>
+            <option value="documental">Fotografía Documental</option>
+            <option value="naturaleza">Naturaleza y Vida Silvestre</option>
+            <option value="editorial">Editorial / Publicación</option>
+            <option value="eventos">Eventos</option>
+            <option value="moda">Moda</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="contact__form-group">
+          <label for="contact-message" class="contact__form-label">Mensaje <span aria-hidden="true">*</span></label>
+          <textarea
+            id="contact-message"
+            name="message"
+            class="contact__form-input contact__form-textarea"
+            placeholder="Cuéntame sobre tu proyecto..."
+            rows="5"
+            required
+            aria-required="true"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary contact__submit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Enviar mensaje
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding: clamp(4rem, 8vw, 8rem) 0;
+    background: var(--color3);
+  }
+
+  .contact__inner {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+
+  .contact__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .contact__title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1.15;
+  }
+
+  .contact__desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 48ch;
+  }
+
+  .contact__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact__info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color2);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .contact__info-item:hover {
+    border-color: var(--color1);
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+  }
+
+  .contact__info-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--color4);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color1);
+    flex-shrink: 0;
+    border: 1px solid var(--color3);
+  }
+
+  .contact__info-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .contact__info-value {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  /* Social */
+  .contact__social-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .contact__social-links {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .contact__social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--color5);
+    border: 1.5px solid var(--color3);
+    padding: 0.5rem 0.875rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+  }
+
+  .contact__social-link:hover {
+    background: var(--color1);
+    border-color: var(--color1);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Form */
+  .contact__form-wrap {
+    background: var(--color5);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem;
+    border: 1px solid var(--color2);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .contact__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .contact__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contact__form-label {
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .contact__form-label span {
+    color: var(--color1);
+  }
+
+  .contact__form-input {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--color4);
+    border: 1.5px solid var(--color3);
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1.125rem;
+    transition: all var(--transition-fast);
+    outline: none;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .contact__form-input::placeholder {
+    color: var(--text-light);
+  }
+
+  .contact__form-input:focus {
+    border-color: var(--color1);
+    background: var(--color5);
+    box-shadow: 0 0 0 3px rgba(255, 179, 200, 0.3);
+  }
+
+  .contact__form-textarea {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.6;
+  }
+
+  .contact__form-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a3a4a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+
+  .contact__submit {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 900px) {
+    .contact__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .contact__form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .contact__form-wrap {
+      padding: 1.5rem;
+    }
+
+    .contact__social-links {
+      flex-wrap: wrap;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact__form');
+  const submitBtn = form?.querySelector<HTMLButtonElement>('.contact__submit');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!submitBtn) return;
+
+    const original = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      ¡Mensaje enviado!
+    `;
+    submitBtn.style.background = 'var(--color2)';
+
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = original;
+      submitBtn.style.background = '';
+      form.reset();
+    }, 3000);
+  });
+</script>

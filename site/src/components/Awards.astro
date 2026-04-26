@@ -1,0 +1,341 @@
+---
+const awards = [
+  {
+    year: '2023',
+    title: 'Fotografía del Año',
+    org: 'Festival Internacional de Fotografía de Cartagena',
+    type: 'Premio',
+  },
+  {
+    year: '2022',
+    title: 'Finalista World Press Photo',
+    org: 'Categoría Naturaleza · World Press Photo Foundation',
+    type: 'Finalista',
+  },
+  {
+    year: '2021',
+    title: 'Premio Lente Verde',
+    org: 'Fotografía Ambiental Latinoamérica',
+    type: 'Premio',
+  },
+  {
+    year: '2020',
+    title: 'Beca de Creación',
+    org: 'Ministerio de Cultura de Colombia',
+    type: 'Beca',
+  },
+  {
+    year: '2017',
+    title: 'Premio Simón Bolívar de Periodismo',
+    org: 'Mejor Fotografía · Colombia',
+    type: 'Premio',
+  },
+];
+
+const projects = [
+  {
+    year: '2023',
+    title: 'Post-Acuerdo',
+    desc: 'Crónica visual del proceso de reincorporación de excombatientes. Expuesta en la Galería Santa Fe de Bogotá y en la Bienal de Fotografía de Cali.',
+  },
+  {
+    year: '2021–2022',
+    title: 'Orinoquía Viva',
+    desc: 'Colaboración con WWF Colombia documentando la fauna endémica de la cuenca del Orinoco. Imágenes utilizadas en campaña de conservación internacional.',
+  },
+  {
+    year: '2019',
+    title: 'Mujeres de Sabana',
+    desc: 'Retrato documental de mujeres rurales del Meta y Casanare. Adquirida por el Banco de la República para su colección permanente de arte.',
+  },
+  {
+    year: '2017',
+    title: 'Ríos que Hablan',
+    desc: 'Proyecto fotográfico sobre la contaminación de fuentes hídricas en el Putumayo. Ganador del Premio Simón Bolívar de Periodismo.',
+  },
+  {
+    year: '2015',
+    title: 'Llano Adentro',
+    desc: 'Serie documental sobre la vida cotidiana en los hatos ganaderos de Casanare y Arauca. Publicada en National Geographic en Español.',
+  },
+];
+---
+
+<section class="awards" id="reconocimientos" aria-labelledby="awards-heading">
+  <div class="container">
+    <header class="awards__header">
+      <p class="section-label">Reconocimientos</p>
+      <h2 class="awards__title" id="awards-heading">Trayectoria que habla por sí sola</h2>
+    </header>
+
+    <div class="awards__grid">
+      <!-- Awards column -->
+      <div class="awards__col">
+        <h3 class="awards__col-title">Premios y reconocimientos</h3>
+        <ol class="awards__list" reversed>
+          {awards.map(award => (
+            <li class="awards__item">
+              <div class="awards__item-header">
+                <span class="awards__badge awards__badge--{award.type.toLowerCase()}">{award.type}</span>
+                <time class="awards__year" datetime={award.year.slice(0, 4)}>{award.year}</time>
+              </div>
+              <h4 class="awards__item-title">{award.title}</h4>
+              <p class="awards__item-org">{award.org}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <!-- Projects column -->
+      <div class="awards__col">
+        <h3 class="awards__col-title">Proyectos destacados</h3>
+        <ol class="awards__projects" reversed>
+          {projects.map((project, i) => (
+            <li class="awards__project">
+              <div class="awards__project-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</div>
+              <div class="awards__project-content">
+                <div class="awards__project-header">
+                  <h4 class="awards__project-title">{project.title}</h4>
+                  <time class="awards__year" datetime={project.year.slice(0, 4)}>{project.year}</time>
+                </div>
+                <p class="awards__project-desc">{project.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    <!-- Exhibitions strip -->
+    <div class="awards__expo">
+      <p class="awards__expo-label">Exposiciones en</p>
+      <div class="awards__expo-countries">
+        {['Colombia', 'España', 'México', 'Francia', 'Argentina'].map(country => (
+          <span class="awards__expo-country">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            {country}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .awards {
+    padding: clamp(4rem, 8vw, 8rem) 0;
+    background: var(--color4);
+  }
+
+  .awards__header {
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .awards__title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1.1;
+    max-width: 18ch;
+  }
+
+  .awards__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .awards__col-title {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color2);
+  }
+
+  /* Awards list */
+  .awards__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .awards__item {
+    background: var(--color5);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    border: 1px solid var(--color3);
+    transition: all var(--transition-normal);
+    cursor: default;
+  }
+
+  .awards__item:hover {
+    border-color: var(--color1);
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+  }
+
+  .awards__item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .awards__badge {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.625rem;
+    border-radius: 100px;
+    background: var(--color1);
+    color: var(--text-primary);
+  }
+
+  .awards__year {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .awards__item-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .awards__item-org {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* Projects list */
+  .awards__projects {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .awards__project {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .awards__project-num {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color2);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 2.5rem;
+    user-select: none;
+  }
+
+  .awards__project-content {
+    flex: 1;
+    padding-top: 0.25rem;
+    border-bottom: 1px solid var(--color3);
+    padding-bottom: 1.25rem;
+  }
+
+  .awards__project:last-child .awards__project-content {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .awards__project-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .awards__project-title {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .awards__project-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* Exhibitions strip */
+  .awards__expo {
+    border-top: 1px solid var(--color3);
+    padding-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .awards__expo-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .awards__expo-countries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .awards__expo-country {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--color5);
+    border: 1px solid var(--color3);
+    padding: 0.375rem 0.875rem;
+    border-radius: 100px;
+  }
+
+  .awards__expo-country svg {
+    color: var(--color1);
+  }
+
+  @media (max-width: 900px) {
+    .awards__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

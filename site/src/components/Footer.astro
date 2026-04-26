@@ -1,0 +1,186 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer" role="contentinfo">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="/" class="footer__logo" aria-label="Valentina Ríos Fotografía - Inicio">
+        <img src="/images/logo.png" alt="Logo Valentina Ríos Fotografía" width="36" height="36" />
+        <span>Valentina Ríos</span>
+      </a>
+      <p class="footer__tagline">
+        Fotógrafa Documental y de Naturaleza.<br />
+        Yopal, Casanare, Colombia.
+      </p>
+      <p class="footer__copyright">
+        &copy; {currentYear} Valentina Ríos Mendoza. Todos los derechos reservados.
+      </p>
+    </div>
+
+    <nav class="footer__nav" aria-label="Navegación del pie de página">
+      <div class="footer__nav-col">
+        <h3>Portafolio</h3>
+        <ul>
+          <li><a href="#portafolio">Fotografía Documental</a></li>
+          <li><a href="#portafolio">Naturaleza y Territorio</a></li>
+          <li><a href="#portafolio">Retratos</a></li>
+          <li><a href="#portafolio">Moda</a></li>
+          <li><a href="#portafolio">Ver todo</a></li>
+        </ul>
+      </div>
+      <div class="footer__nav-col">
+        <h3>Información</h3>
+        <ul>
+          <li><a href="#sobre-mi">Sobre mí</a></li>
+          <li><a href="#reconocimientos">Premios</a></li>
+          <li><a href="#equipo">Equipamiento</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer__nav-col">
+        <h3>Redes</h3>
+        <ul>
+          <li><a href="https://instagram.com/ValenGraphics" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+          <li><a href="https://facebook.com/ValenGraphics" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+          <li><a href="https://x.com/ValenGraphics" target="_blank" rel="noopener noreferrer">X / Twitter</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer__bottom">
+    <div class="container">
+      <p>Disponible para proyectos nacionales e internacionales · <a href="mailto:valentina@riosfotografia.com">valentina@riosfotografia.com</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--text-primary);
+    color: rgba(255, 236, 241, 0.8);
+    padding-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 179, 200, 0.15);
+  }
+
+  /* Brand */
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    cursor: pointer;
+    width: fit-content;
+  }
+
+  .footer__logo img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 2px solid rgba(255, 179, 200, 0.3);
+  }
+
+  .footer__logo span {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color4);
+  }
+
+  .footer__tagline {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(255, 236, 241, 0.6);
+  }
+
+  .footer__copyright {
+    font-size: 0.78rem;
+    color: rgba(255, 236, 241, 0.4);
+    margin-top: auto;
+  }
+
+  /* Nav */
+  .footer__nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .footer__nav-col h3 {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color2);
+    margin-bottom: 1rem;
+  }
+
+  .footer__nav-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .footer__nav-col a {
+    font-size: 0.88rem;
+    color: rgba(255, 236, 241, 0.65);
+    transition: color var(--transition-fast);
+    cursor: pointer;
+  }
+
+  .footer__nav-col a:hover {
+    color: var(--color1);
+  }
+
+  /* Bottom */
+  .footer__bottom {
+    padding: 1.25rem 0;
+  }
+
+  .footer__bottom p {
+    font-size: 0.82rem;
+    color: rgba(255, 236, 241, 0.4);
+    text-align: center;
+  }
+
+  .footer__bottom a {
+    color: var(--color2);
+    transition: color var(--transition-fast);
+  }
+
+  .footer__bottom a:hover {
+    color: var(--color1);
+  }
+
+  @media (max-width: 900px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .footer__nav {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer__nav {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

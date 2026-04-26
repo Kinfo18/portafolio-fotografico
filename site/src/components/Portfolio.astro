@@ -1,0 +1,562 @@
+---
+const categories = [
+  { id: 'all', label: 'Todo' },
+  { id: 'naturaleza', label: 'Naturaleza' },
+  { id: 'retratos', label: 'Retratos' },
+  { id: 'paisajes', label: 'Paisajes' },
+  { id: 'moda', label: 'Moda' },
+  { id: 'maternidad', label: 'Maternidad' },
+  { id: 'arquitectura', label: 'Arquitectura' },
+  { id: 'deportiva', label: 'Deportiva' },
+  { id: 'eventos', label: 'Eventos' },
+  { id: 'nocturna', label: 'Nocturna' },
+  { id: 'alimentos', label: 'Alimentos' },
+  { id: 'de-calle', label: 'Calle' },
+  { id: 'interiores', label: 'Interiores' },
+  { id: 'colores', label: 'Mezcla de color' },
+  { id: 'naturaleza-muerta', label: 'Naturaleza muerta' },
+];
+
+const photos = [
+  // Naturaleza y Territorio (feature category - más fotos)
+  ...Array.from({length: 14}, (_, i) => ({
+    src: `/images/fotografias/naturaleza/naturaleza_${i + 1}.jpg`,
+    alt: `Fotografía documental de naturaleza y territorio en Colombia ${i + 1}`,
+    category: 'naturaleza',
+    size: i === 0 ? 'large' : i % 5 === 0 ? 'tall' : 'normal',
+  })),
+  ...Array.from({length: 8}, (_, i) => ({
+    src: `/images/fotografias/naturaleza/territorio_${i + 1}.jpg`,
+    alt: `Fotografía documental de territorio colombiano ${i + 1}`,
+    category: 'naturaleza',
+    size: i % 4 === 1 ? 'wide' : 'normal',
+  })),
+  // Retratos
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/retratos/retrato_${i + 1}.jpg`,
+    alt: `Retrato fotográfico ${i + 1}`,
+    category: 'retratos',
+    size: i === 0 ? 'large' : i % 3 === 0 ? 'tall' : 'normal',
+  })),
+  // Paisajes
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/paisajes/paisaje_${i + 1}.jpg`,
+    alt: `Fotografía de paisaje ${i + 1}`,
+    category: 'paisajes',
+    size: i === 0 ? 'wide' : 'normal',
+  })),
+  // Moda
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/moda/moda_${i + 1}.jpg`,
+    alt: `Fotografía de moda ${i + 1}`,
+    category: 'moda',
+    size: i === 0 ? 'tall' : 'normal',
+  })),
+  // Maternidad
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/maternidad/maternidad_${i + 1}.jpg`,
+    alt: `Fotografía de maternidad ${i + 1}`,
+    category: 'maternidad',
+    size: i % 3 === 1 ? 'tall' : 'normal',
+  })),
+  // Arquitectura
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/arquitectura/arquitectura_${i + 1}.jpg`,
+    alt: `Fotografía de arquitectura ${i + 1}`,
+    category: 'arquitectura',
+    size: i === 0 ? 'wide' : 'normal',
+  })),
+  // Deportiva
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/deportiva/deporte_${i + 1}.jpg`,
+    alt: `Fotografía deportiva ${i + 1}`,
+    category: 'deportiva',
+    size: 'normal',
+  })),
+  // Eventos
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/eventos/evento_${i + 1}.jpg`,
+    alt: `Fotografía de eventos ${i + 1}`,
+    category: 'eventos',
+    size: i === 0 ? 'wide' : 'normal',
+  })),
+  // Nocturna
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/nocturna/nocturna_${i + 1}.jpg`,
+    alt: `Fotografía nocturna de larga exposición ${i + 1}`,
+    category: 'nocturna',
+    size: i % 2 === 0 ? 'wide' : 'normal',
+  })),
+  // Alimentos
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/alimentos/alimentos_${i + 1}.jpg`,
+    alt: `Fotografía de alimentos ${i + 1}`,
+    category: 'alimentos',
+    size: 'normal',
+  })),
+  // De calle
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/de-calle/de_calle_${i + 1}.jpg`,
+    alt: `Fotografía de calle ${i + 1}`,
+    category: 'de-calle',
+    size: i % 3 === 0 ? 'tall' : 'normal',
+  })),
+  // Interiores
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/interiores/interiores_${i + 1}.jpg`,
+    alt: `Fotografía de interiores ${i + 1}`,
+    category: 'interiores',
+    size: i === 0 ? 'wide' : 'normal',
+  })),
+  // Colores
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/colores/colores_${i + 1}.jpg`,
+    alt: `Fotografía mezcla de color ${i + 1}`,
+    category: 'colores',
+    size: 'normal',
+  })),
+  // Naturaleza muerta
+  ...Array.from({length: 5}, (_, i) => ({
+    src: `/images/fotografias/naturaleza-muerta/naturaleza_muerta_${i + 1}.jpg`,
+    alt: `Fotografía de naturaleza muerta ${i + 1}`,
+    category: 'naturaleza-muerta',
+    size: 'normal',
+  })),
+];
+---
+
+<section class="portfolio" id="portafolio" aria-labelledby="portfolio-heading">
+  <div class="container">
+    <header class="portfolio__header">
+      <p class="section-label">Portafolio</p>
+      <h2 class="portfolio__title" id="portfolio-heading">Cada imagen, un argumento</h2>
+      <p class="portfolio__desc">
+        Más de 14 categorías fotográficas que documentan la riqueza natural, humana y cultural de Colombia.
+      </p>
+    </header>
+
+    <div class="portfolio__filters" role="tablist" aria-label="Filtrar por categoría">
+      {categories.map((cat, i) => (
+        <button
+          class={`portfolio__filter ${i === 0 ? 'active' : ''}`}
+          data-filter={cat.id}
+          role="tab"
+          aria-selected={i === 0 ? 'true' : 'false'}
+          aria-controls="portfolio-grid"
+        >
+          {cat.label}
+        </button>
+      ))}
+    </div>
+
+    <div class="portfolio__grid" id="portfolio-grid" role="tabpanel">
+      {photos.map((photo) => (
+        <div
+          class={`portfolio__item portfolio__item--${photo.size}`}
+          data-category={photo.category}
+        >
+          <div class="portfolio__item-inner">
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              loading="lazy"
+              decoding="async"
+              width="400"
+              height="300"
+            />
+            <div class="portfolio__overlay" aria-hidden="true">
+              <button class="portfolio__zoom" aria-label={`Ver ${photo.alt} en pantalla completa`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de imagen" aria-hidden="true">
+    <button class="lightbox__close" aria-label="Cerrar visor">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <button class="lightbox__prev" aria-label="Imagen anterior">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <button class="lightbox__next" aria-label="Imagen siguiente">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+    <div class="lightbox__content">
+      <img src="" alt="" id="lightbox-img" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .portfolio {
+    padding: clamp(4rem, 8vw, 8rem) 0;
+    background: var(--color3);
+  }
+
+  .portfolio__header {
+    text-align: center;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .portfolio__header .section-label {
+    justify-content: center;
+  }
+
+  .portfolio__title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+
+  .portfolio__desc {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 52ch;
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  .portfolio__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .portfolio__filter {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--color5);
+    border: 1.5px solid var(--color2);
+    padding: 0.5rem 1.125rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+  }
+
+  .portfolio__filter:hover,
+  .portfolio__filter.active {
+    background: var(--color1);
+    border-color: var(--color1);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
+
+  .portfolio__grid {
+    columns: 4 260px;
+    gap: 1rem;
+  }
+
+  .portfolio__item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+  }
+
+  .portfolio__item.hidden {
+    display: none;
+  }
+
+  .portfolio__item-inner {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color4);
+  }
+
+  .portfolio__item-inner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    object-fit: cover;
+  }
+
+  .portfolio__item--tall .portfolio__item-inner img {
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .portfolio__item--wide .portfolio__item-inner img {
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .portfolio__item--large .portfolio__item-inner img {
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .portfolio__item:hover .portfolio__item-inner img {
+    transform: scale(1.06);
+  }
+
+  .portfolio__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(255, 100, 140, 0.5), transparent 50%);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 1rem;
+  }
+
+  .portfolio__item:hover .portfolio__overlay {
+    opacity: 1;
+  }
+
+  .portfolio__zoom {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--text-primary);
+  }
+
+  .portfolio__zoom:hover {
+    background: var(--color5);
+    transform: scale(1.1);
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(10, 0, 5, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+    backdrop-filter: blur(8px);
+  }
+
+  .lightbox.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .lightbox__content {
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox__content img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .lightbox__close,
+  .lightbox__prev,
+  .lightbox__next {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(4px);
+  }
+
+  .lightbox__close:hover,
+  .lightbox__prev:hover,
+  .lightbox__next:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+  }
+
+  .lightbox__close { top: 1.5rem; right: 1.5rem; }
+  .lightbox__prev { left: 1.5rem; top: 50%; transform: translateY(-50%); }
+  .lightbox__next { right: 1.5rem; top: 50%; transform: translateY(-50%); }
+  .lightbox__prev:hover { transform: translateY(-50%) scale(1.1); }
+  .lightbox__next:hover { transform: translateY(-50%) scale(1.1); }
+
+  @media (max-width: 768px) {
+    .portfolio__grid {
+      columns: 2 140px;
+      gap: 0.75rem;
+    }
+
+    .portfolio__item {
+      margin-bottom: 0.75rem;
+    }
+
+    .lightbox__prev { left: 0.75rem; }
+    .lightbox__next { right: 0.75rem; }
+  }
+</style>
+
+<script>
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.portfolio__filter');
+  const items = document.querySelectorAll<HTMLElement>('.portfolio__item');
+  const lightbox = document.getElementById('lightbox')!;
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lightboxClose = lightbox.querySelector('.lightbox__close')!;
+  const lightboxPrev = lightbox.querySelector('.lightbox__prev')!;
+  const lightboxNext = lightbox.querySelector('.lightbox__next')!;
+
+  let currentImages: string[] = [];
+  let currentIndex = 0;
+  let currentFilter = 'all';
+
+  function getVisibleImages(): HTMLImageElement[] {
+    return Array.from(items)
+      .filter(item => !item.classList.contains('hidden'))
+      .map(item => item.querySelector('img')!);
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter!;
+      currentFilter = filter;
+
+      filterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+
+      items.forEach(item => {
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  function openLightbox(imgSrc: string, imgAlt: string, index: number) {
+    currentImages = getVisibleImages().map(img => img.src);
+    currentIndex = index;
+    lightboxImg.src = imgSrc;
+    lightboxImg.alt = imgAlt;
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    lightboxClose.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+    lightboxImg.src = currentImages[currentIndex];
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % currentImages.length;
+    lightboxImg.src = currentImages[currentIndex];
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.portfolio__zoom').forEach((btn, i) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = btn.closest('.portfolio__item')!;
+      const img = item.querySelector('img')!;
+      openLightbox(img.src, img.alt, i);
+    });
+  });
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img')!;
+      const visibleImgs = getVisibleImages();
+      const visibleIndex = visibleImgs.indexOf(img);
+      openLightbox(img.src, img.alt, visibleIndex);
+    });
+  });
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', showPrev);
+  lightboxNext.addEventListener('click', showNext);
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showPrev();
+    if (e.key === 'ArrowRight') showNext();
+  });
+
+  // Intersection observer for entrance animation
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).style.opacity = '1';
+          (entry.target as HTMLElement).style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  items.forEach((item, i) => {
+    (item as HTMLElement).style.opacity = '0';
+    (item as HTMLElement).style.transform = 'translateY(20px)';
+    (item as HTMLElement).style.transition = `opacity 0.5s ${i * 0.03}s ease, transform 0.5s ${i * 0.03}s ease`;
+    observer.observe(item);
+  });
+</script>
