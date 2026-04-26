@@ -20,7 +20,6 @@ const categories = [
   { id: 'naturaleza-muerta', label: 'Naturaleza muerta' },
 ];
 
-// Import all portfolio images at build time for Astro optimization
 const allImgs = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/images/fotografias/**/*.{jpg,jpeg,png}',
   { eager: true }
@@ -184,6 +183,16 @@ const photos = photoDefs
         </div>
       ))}
     </div>
+
+    <div class="portfolio__more">
+      <button class="portfolio__load-more" id="load-more-btn" aria-label="Cargar más fotografías">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+        <span>Cargar más fotos</span>
+        <span class="portfolio__load-more-badge" id="load-more-count" aria-live="polite"></span>
+      </button>
+    </div>
   </div>
 
   <!-- Lightbox -->
@@ -295,6 +304,10 @@ const photos = photoDefs
     display: none;
   }
 
+  .portfolio__item.hidden-more {
+    display: none;
+  }
+
   .portfolio__item-inner {
     position: relative;
     overflow: hidden;
@@ -364,6 +377,67 @@ const photos = photoDefs
   .portfolio__zoom:hover {
     background: var(--color5);
     transform: scale(1.1);
+  }
+
+  /* Load more */
+  .portfolio__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  .portfolio__load-more {
+    display: none;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--color5);
+    border: 2px solid var(--color1);
+    padding: 0.875rem 1.75rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+  }
+
+  .portfolio__load-more:hover {
+    background: var(--color1);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .portfolio__load-more svg {
+    transition: transform var(--transition-normal);
+    flex-shrink: 0;
+    color: var(--color1);
+  }
+
+  .portfolio__load-more:hover svg {
+    transform: translateY(3px);
+    color: var(--text-primary);
+  }
+
+  .portfolio__load-more-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 0.375rem;
+    background: var(--color1);
+    color: var(--text-primary);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1;
+    transition: background var(--transition-normal);
+  }
+
+  .portfolio__load-more:hover .portfolio__load-more-badge {
+    background: rgba(255, 255, 255, 0.35);
   }
 
   /* Lightbox */
@@ -448,51 +522,126 @@ const photos = photoDefs
 </style>
 
 <script>
+  const BATCH = 10;
+
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.portfolio__item'));
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.portfolio__filter');
-  const items = document.querySelectorAll<HTMLElement>('.portfolio__item');
+  const loadMoreBtn = document.getElementById('load-more-btn') as HTMLButtonElement;
+  const loadMoreCount = document.getElementById('load-more-count')!;
   const lightbox = document.getElementById('lightbox')!;
   const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
   const lightboxClose = lightbox.querySelector('.lightbox__close')!;
   const lightboxPrev = lightbox.querySelector('.lightbox__prev')!;
   const lightboxNext = lightbox.querySelector('.lightbox__next')!;
 
+  let currentFilter = 'all';
   let currentImages: string[] = [];
   let currentIndex = 0;
-  let currentFilter = 'all';
+
+  // ─── Helpers ────────────────────────────────────────────────────────────────
+
+  function matchesFilter(item: HTMLElement): boolean {
+    return currentFilter === 'all' || item.dataset.category === currentFilter;
+  }
+
+  function getMatchingItems(): HTMLElement[] {
+    return items.filter(item => matchesFilter(item));
+  }
+
+  function isVisible(item: HTMLElement): boolean {
+    return !item.classList.contains('hidden') && !item.classList.contains('hidden-more');
+  }
+
+  function initBlurUp(item: HTMLElement) {
+    const img = item.querySelector<HTMLImageElement>('img.blur-img');
+    if (!img) return;
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+    }
+  }
+
+  function updateMoreButton() {
+    const remaining = getMatchingItems().filter(item =>
+      item.classList.contains('hidden-more')
+    ).length;
+
+    if (remaining > 0) {
+      loadMoreBtn.style.display = 'flex';
+      loadMoreCount.textContent = String(remaining);
+    } else {
+      loadMoreBtn.style.display = 'none';
+    }
+  }
+
+  // ─── Filter ──────────────────────────────────────────────────────────────────
+
+  function applyFilter(filter: string) {
+    currentFilter = filter;
+
+    // Step 1: sort by filter membership
+    items.forEach(item => {
+      if (matchesFilter(item)) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+        item.classList.remove('hidden-more');
+      }
+    });
+
+    // Step 2: keep only the first BATCH visible among matching items
+    getMatchingItems().forEach((item, i) => {
+      if (i < BATCH) {
+        item.classList.remove('hidden-more');
+        initBlurUp(item);
+      } else {
+        item.classList.add('hidden-more');
+      }
+    });
+
+    updateMoreButton();
+  }
+
+  // ─── Load more ───────────────────────────────────────────────────────────────
+
+  function revealItem(item: HTMLElement, delay: number) {
+    item.classList.remove('hidden-more');
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    item.style.transition = `opacity 0.45s ${delay}s ease, transform 0.45s ${delay}s ease`;
+    // Double rAF ensures transition triggers after display:none is removed
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      });
+    });
+    initBlurUp(item);
+  }
+
+  function loadMore() {
+    const toReveal = getMatchingItems()
+      .filter(item => item.classList.contains('hidden-more'))
+      .slice(0, BATCH);
+
+    toReveal.forEach((item, i) => revealItem(item, i * 0.04));
+    updateMoreButton();
+  }
+
+  // ─── Lightbox ────────────────────────────────────────────────────────────────
 
   function getVisibleImages(): HTMLImageElement[] {
-    return Array.from(items)
-      .filter(item => !item.classList.contains('hidden'))
+    return items
+      .filter(item => isVisible(item))
       .map(item => item.querySelector('img')!);
   }
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter!;
-      currentFilter = filter;
-
-      filterBtns.forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-
-      items.forEach(item => {
-        if (filter === 'all' || item.dataset.category === filter) {
-          item.classList.remove('hidden');
-        } else {
-          item.classList.add('hidden');
-        }
-      });
-    });
-  });
-
-  function openLightbox(imgSrc: string, imgAlt: string, index: number) {
+  function openLightbox(src: string, alt: string, index: number) {
     currentImages = getVisibleImages().map(img => img.src);
     currentIndex = index;
-    lightboxImg.src = imgSrc;
-    lightboxImg.alt = imgAlt;
+    lightboxImg.src = src;
+    lightboxImg.alt = alt;
     lightbox.classList.add('open');
     lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -515,31 +664,45 @@ const photos = photoDefs
     lightboxImg.src = currentImages[currentIndex];
   }
 
-  document.querySelectorAll<HTMLButtonElement>('.portfolio__zoom').forEach((btn, i) => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const item = btn.closest('.portfolio__item')!;
-      const img = item.querySelector('img')!;
-      openLightbox(img.src, img.alt, i);
+  // ─── Event wiring ────────────────────────────────────────────────────────────
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      applyFilter(btn.dataset.filter!);
     });
   });
 
-  items.forEach((item, i) => {
-    item.addEventListener('click', () => {
+  loadMoreBtn.addEventListener('click', loadMore);
+
+  document.querySelectorAll<HTMLButtonElement>('.portfolio__zoom').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = btn.closest<HTMLElement>('.portfolio__item')!;
       const img = item.querySelector('img')!;
-      const visibleImgs = getVisibleImages();
-      const visibleIndex = visibleImgs.indexOf(img);
-      openLightbox(img.src, img.alt, visibleIndex);
+      const idx = getVisibleImages().indexOf(img);
+      openLightbox(img.src, img.alt, idx);
+    });
+  });
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      if (!isVisible(item)) return;
+      const img = item.querySelector('img')!;
+      const idx = getVisibleImages().indexOf(img);
+      openLightbox(img.src, img.alt, idx);
     });
   });
 
   lightboxClose.addEventListener('click', closeLightbox);
   lightboxPrev.addEventListener('click', showPrev);
   lightboxNext.addEventListener('click', showNext);
-
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 
   document.addEventListener('keydown', (e) => {
     if (!lightbox.classList.contains('open')) return;
@@ -548,33 +711,33 @@ const photos = photoDefs
     if (e.key === 'ArrowRight') showNext();
   });
 
-  // Intersection observer for entrance animation
-  const observer = new IntersectionObserver(
+  // ─── Entrance animation (initial visible batch) ───────────────────────────
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const entranceObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           (entry.target as HTMLElement).style.opacity = '1';
           (entry.target as HTMLElement).style.transform = 'translateY(0)';
-          observer.unobserve(entry.target);
+          entranceObserver.unobserve(entry.target);
         }
       });
     },
-    { threshold: 0.1 }
+    { threshold: 0.05 }
   );
 
-  items.forEach((item, i) => {
-    (item as HTMLElement).style.opacity = '0';
-    (item as HTMLElement).style.transform = 'translateY(20px)';
-    (item as HTMLElement).style.transition = `opacity 0.5s ${i * 0.03}s ease, transform 0.5s ${i * 0.03}s ease`;
-    observer.observe(item);
-  });
+  // ─── Init ─────────────────────────────────────────────────────────────────
 
-  // Blur-up: mark images as loaded once they decode
-  document.querySelectorAll<HTMLImageElement>('.portfolio__item img.blur-img').forEach(img => {
-    if (img.complete && img.naturalWidth > 0) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-    }
-  });
+  applyFilter('all');
+
+  if (!prefersReduced) {
+    items.filter(item => isVisible(item)).forEach((item, i) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+      item.style.transition = `opacity 0.5s ${i * 0.03}s ease, transform 0.5s ${i * 0.03}s ease`;
+      entranceObserver.observe(item);
+    });
+  }
 </script>
