@@ -80,8 +80,9 @@ import '../styles/global.css';
     sections.forEach(section => observer.observe(section));
   }
 
-  // Blur-up global: applies to Hero, About, Cameras and any other blur-img outside Portfolio
+  // Blur-up global: Hero, About, Cameras — skip #portfolio-grid (managed by Preact island)
   document.querySelectorAll<HTMLImageElement>('img.blur-img').forEach(img => {
+    if (img.closest('#portfolio-grid')) return;
     if (img.complete && img.naturalWidth > 0) {
       img.classList.add('loaded');
     } else {

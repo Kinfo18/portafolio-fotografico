@@ -1,6 +1,8 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import PortfolioGallery from './islands/PortfolioGallery.tsx';
+import type { GalleryPhoto } from './islands/PortfolioGallery.tsx';
 
 const categories = [
   { id: 'all', label: 'Todo' },
@@ -126,13 +128,23 @@ const photoDefs: PhotoDef[] = [
   })),
 ];
 
-const photos = photoDefs
-  .map(def => ({ ...def, img: findImg(def.slug) }))
-  .filter((p): p is typeof p & { img: ImageMetadata } => p.img !== undefined);
+// Pre-optimiza todas las imágenes en build-time con getImage().
+// Las URLs resueltas se pasan como JSON a la isla — cero re-procesamiento en cliente.
+const galleryPhotos: GalleryPhoto[] = (
+  await Promise.all(
+    photoDefs.map(async (def): Promise<GalleryPhoto | null> => {
+      const imgMeta = findImg(def.slug);
+      if (!imgMeta) return null;
+      const opt = await getImage({ src: imgMeta, width: 900, format: 'avif', quality: 75 });
+      return { src: opt.src, alt: def.alt, category: def.category, size: def.size };
+    })
+  )
+).filter((p): p is GalleryPhoto => p !== null);
 ---
 
 <section class="portfolio" id="portafolio" aria-labelledby="portfolio-heading">
   <div class="container">
+    <!-- Cabecera estática: SSR puro, cero JS -->
     <header class="portfolio__header">
       <p class="section-label">Portafolio</p>
       <h2 class="portfolio__title" id="portfolio-heading">Cada imagen, un argumento</h2>
@@ -141,85 +153,22 @@ const photos = photoDefs
       </p>
     </header>
 
-    <div class="portfolio__filters" role="tablist" aria-label="Filtrar por categoría">
-      {categories.map((cat, i) => (
-        <button
-          class={`portfolio__filter ${i === 0 ? 'active' : ''}`}
-          data-filter={cat.id}
-          role="tab"
-          aria-selected={i === 0 ? 'true' : 'false'}
-          aria-controls="portfolio-grid"
-        >
-          {cat.label}
-        </button>
-      ))}
-    </div>
-
-    <div class="portfolio__grid" id="portfolio-grid" role="tabpanel">
-      {photos.map((photo) => (
-        <div
-          class={`portfolio__item portfolio__item--${photo.size}`}
-          data-category={photo.category}
-        >
-          <div class="portfolio__item-inner">
-            <Image
-              src={photo.img}
-              alt={photo.alt}
-              width={900}
-              format="avif"
-              quality={75}
-              loading="lazy"
-              sizes="(max-width: 768px) calc(50vw - 1rem), calc(25vw - 1rem)"
-              class="blur-img"
-            />
-            <div class="portfolio__overlay" aria-hidden="true">
-              <button class="portfolio__zoom" aria-label={`Ver ${photo.alt} en pantalla completa`}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <div class="portfolio__more">
-      <button class="portfolio__load-more" id="load-more-btn" aria-label="Cargar más fotografías">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-        <span>Cargar más fotos</span>
-        <span class="portfolio__load-more-badge" id="load-more-count" aria-live="polite"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de imagen" aria-hidden="true">
-    <button class="lightbox__close" aria-label="Cerrar visor">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-    <button class="lightbox__prev" aria-label="Imagen anterior">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-    </button>
-    <button class="lightbox__next" aria-label="Imagen siguiente">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="9 18 15 12 9 6"/>
-      </svg>
-    </button>
-    <div class="lightbox__content">
-      <img src="" alt="" id="lightbox-img" />
-    </div>
+    <!--
+      Isla: filtros + galería + load-more + lightbox.
+      client:visible → el bundle JS solo se carga cuando la sección entra al viewport.
+      Las URLs de imagen ya vienen optimizadas del build (getImage), no hay trabajo en cliente.
+    -->
+    <PortfolioGallery
+      photos={galleryPhotos}
+      categories={categories}
+      client:visible
+    />
   </div>
 </section>
 
 <style>
+  /* ── Sección y cabecera: elementos estáticos (scoped) ──────────────────── */
+
   .portfolio {
     padding: clamp(4rem, 8vw, 8rem) 0;
     background: var(--color3);
@@ -255,7 +204,9 @@ const photos = photoDefs
     line-height: 1.7;
   }
 
-  .portfolio__filters {
+  /* ── Elementos renderizados por la isla (necesitan ser globales) ────────── */
+
+  :global(.portfolio__filters) {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -263,7 +214,7 @@ const photos = photoDefs
     margin-bottom: 2.5rem;
   }
 
-  .portfolio__filter {
+  :global(.portfolio__filter) {
     font-family: var(--font-heading);
     font-size: 0.8rem;
     font-weight: 600;
@@ -277,8 +228,8 @@ const photos = photoDefs
     white-space: nowrap;
   }
 
-  .portfolio__filter:hover,
-  .portfolio__filter.active {
+  :global(.portfolio__filter:hover),
+  :global(.portfolio__filter.active) {
     background: var(--color1);
     border-color: var(--color1);
     color: var(--text-primary);
@@ -286,36 +237,37 @@ const photos = photoDefs
     transform: translateY(-1px);
   }
 
-  .portfolio__grid {
+  :global(.portfolio__grid) {
     columns: 4 260px;
     gap: 1rem;
   }
 
-  .portfolio__item {
+  :global(.portfolio__item) {
     break-inside: avoid;
     margin-bottom: 1rem;
     border-radius: var(--radius-md);
     overflow: hidden;
     cursor: pointer;
-    transition: opacity var(--transition-normal), transform var(--transition-normal);
+    animation: portfolioItemIn 0.45s ease both;
   }
 
-  .portfolio__item.hidden {
-    display: none;
+  @keyframes portfolioItemIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  .portfolio__item.hidden-more {
-    display: none;
+  @media (prefers-reduced-motion: reduce) {
+    :global(.portfolio__item) { animation: none; }
   }
 
-  .portfolio__item-inner {
+  :global(.portfolio__item-inner) {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-md);
     background: var(--color4);
   }
 
-  .portfolio__item-inner img {
+  :global(.portfolio__item-inner img) {
     width: 100%;
     height: auto;
     display: block;
@@ -323,29 +275,29 @@ const photos = photoDefs
     object-fit: cover;
   }
 
-  .portfolio__item--tall .portfolio__item-inner img {
+  :global(.portfolio__item--tall .portfolio__item-inner img) {
     aspect-ratio: 3/4;
     object-fit: cover;
     width: 100%;
   }
 
-  .portfolio__item--wide .portfolio__item-inner img {
+  :global(.portfolio__item--wide .portfolio__item-inner img) {
     aspect-ratio: 16/9;
     object-fit: cover;
     width: 100%;
   }
 
-  .portfolio__item--large .portfolio__item-inner img {
+  :global(.portfolio__item--large .portfolio__item-inner img) {
     aspect-ratio: 4/3;
     object-fit: cover;
     width: 100%;
   }
 
-  .portfolio__item:hover .portfolio__item-inner img {
+  :global(.portfolio__item:hover .portfolio__item-inner img) {
     transform: scale(1.06);
   }
 
-  .portfolio__overlay {
+  :global(.portfolio__overlay) {
     position: absolute;
     inset: 0;
     background: linear-gradient(to top, rgba(255, 100, 140, 0.5), transparent 50%);
@@ -357,11 +309,11 @@ const photos = photoDefs
     padding: 1rem;
   }
 
-  .portfolio__item:hover .portfolio__overlay {
+  :global(.portfolio__item:hover .portfolio__overlay) {
     opacity: 1;
   }
 
-  .portfolio__zoom {
+  :global(.portfolio__zoom) {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
     width: 40px;
@@ -372,22 +324,22 @@ const photos = photoDefs
     cursor: pointer;
     transition: all var(--transition-fast);
     color: var(--text-primary);
+    border: none;
   }
 
-  .portfolio__zoom:hover {
+  :global(.portfolio__zoom:hover) {
     background: var(--color5);
     transform: scale(1.1);
   }
 
-  /* Load more */
-  .portfolio__more {
+  :global(.portfolio__more) {
     display: flex;
     justify-content: center;
     margin-top: 3rem;
   }
 
-  .portfolio__load-more {
-    display: none;
+  :global(.portfolio__load-more) {
+    display: flex;
     align-items: center;
     gap: 0.625rem;
     font-family: var(--font-heading);
@@ -403,24 +355,24 @@ const photos = photoDefs
     white-space: nowrap;
   }
 
-  .portfolio__load-more:hover {
+  :global(.portfolio__load-more:hover) {
     background: var(--color1);
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
 
-  .portfolio__load-more svg {
+  :global(.portfolio__load-more svg) {
     transition: transform var(--transition-normal);
     flex-shrink: 0;
     color: var(--color1);
   }
 
-  .portfolio__load-more:hover svg {
+  :global(.portfolio__load-more:hover svg) {
     transform: translateY(3px);
     color: var(--text-primary);
   }
 
-  .portfolio__load-more-badge {
+  :global(.portfolio__load-more-badge) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -436,12 +388,12 @@ const photos = photoDefs
     transition: background var(--transition-normal);
   }
 
-  .portfolio__load-more:hover .portfolio__load-more-badge {
+  :global(.portfolio__load-more:hover .portfolio__load-more-badge) {
     background: rgba(255, 255, 255, 0.35);
   }
 
   /* Lightbox */
-  .lightbox {
+  :global(.lightbox) {
     position: fixed;
     inset: 0;
     z-index: 100;
@@ -455,12 +407,12 @@ const photos = photoDefs
     backdrop-filter: blur(8px);
   }
 
-  .lightbox.open {
+  :global(.lightbox.open) {
     opacity: 1;
     pointer-events: auto;
   }
 
-  .lightbox__content {
+  :global(.lightbox__content) {
     max-width: 90vw;
     max-height: 90vh;
     display: flex;
@@ -468,7 +420,7 @@ const photos = photoDefs
     justify-content: center;
   }
 
-  .lightbox__content img {
+  :global(.lightbox__content img) {
     max-width: 90vw;
     max-height: 90vh;
     object-fit: contain;
@@ -476,9 +428,9 @@ const photos = photoDefs
     box-shadow: var(--shadow-xl);
   }
 
-  .lightbox__close,
-  .lightbox__prev,
-  .lightbox__next {
+  :global(.lightbox__close),
+  :global(.lightbox__prev),
+  :global(.lightbox__next) {
     position: absolute;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 50%;
@@ -491,253 +443,33 @@ const photos = photoDefs
     cursor: pointer;
     transition: all var(--transition-fast);
     backdrop-filter: blur(4px);
+    border: none;
   }
 
-  .lightbox__close:hover,
-  .lightbox__prev:hover,
-  .lightbox__next:hover {
+  :global(.lightbox__close:hover),
+  :global(.lightbox__prev:hover),
+  :global(.lightbox__next:hover) {
     background: rgba(255, 255, 255, 0.25);
     transform: scale(1.1);
   }
 
-  .lightbox__close { top: 1.5rem; right: 1.5rem; }
-  .lightbox__prev { left: 1.5rem; top: 50%; transform: translateY(-50%); }
-  .lightbox__next { right: 1.5rem; top: 50%; transform: translateY(-50%); }
-  .lightbox__prev:hover { transform: translateY(-50%) scale(1.1); }
-  .lightbox__next:hover { transform: translateY(-50%) scale(1.1); }
+  :global(.lightbox__close) { top: 1.5rem; right: 1.5rem; }
+  :global(.lightbox__prev)  { left: 1.5rem; top: 50%; transform: translateY(-50%); }
+  :global(.lightbox__next)  { right: 1.5rem; top: 50%; transform: translateY(-50%); }
+  :global(.lightbox__prev:hover) { transform: translateY(-50%) scale(1.1); }
+  :global(.lightbox__next:hover) { transform: translateY(-50%) scale(1.1); }
 
   @media (max-width: 768px) {
-    .portfolio__grid {
+    :global(.portfolio__grid) {
       columns: 2 140px;
       gap: 0.75rem;
     }
 
-    .portfolio__item {
+    :global(.portfolio__item) {
       margin-bottom: 0.75rem;
     }
 
-    .lightbox__prev { left: 0.75rem; }
-    .lightbox__next { right: 0.75rem; }
+    :global(.lightbox__prev) { left: 0.75rem; }
+    :global(.lightbox__next) { right: 0.75rem; }
   }
 </style>
-
-<script>
-  const BATCH = 10;
-
-  const items = Array.from(document.querySelectorAll<HTMLElement>('.portfolio__item'));
-  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.portfolio__filter');
-  const loadMoreBtn = document.getElementById('load-more-btn') as HTMLButtonElement;
-  const loadMoreCount = document.getElementById('load-more-count')!;
-  const lightbox = document.getElementById('lightbox')!;
-  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-  const lightboxClose = lightbox.querySelector('.lightbox__close')!;
-  const lightboxPrev = lightbox.querySelector('.lightbox__prev')!;
-  const lightboxNext = lightbox.querySelector('.lightbox__next')!;
-
-  let currentFilter = 'all';
-  let currentImages: string[] = [];
-  let currentIndex = 0;
-
-  // ─── Helpers ────────────────────────────────────────────────────────────────
-
-  function matchesFilter(item: HTMLElement): boolean {
-    return currentFilter === 'all' || item.dataset.category === currentFilter;
-  }
-
-  function getMatchingItems(): HTMLElement[] {
-    return items.filter(item => matchesFilter(item));
-  }
-
-  function isVisible(item: HTMLElement): boolean {
-    return !item.classList.contains('hidden') && !item.classList.contains('hidden-more');
-  }
-
-  function initBlurUp(item: HTMLElement) {
-    const img = item.querySelector<HTMLImageElement>('img.blur-img');
-    if (!img) return;
-    if (img.complete && img.naturalWidth > 0) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-    }
-  }
-
-  function updateMoreButton() {
-    const remaining = getMatchingItems().filter(item =>
-      item.classList.contains('hidden-more')
-    ).length;
-
-    if (remaining > 0) {
-      loadMoreBtn.style.display = 'flex';
-      loadMoreCount.textContent = String(remaining);
-    } else {
-      loadMoreBtn.style.display = 'none';
-    }
-  }
-
-  // ─── Filter ──────────────────────────────────────────────────────────────────
-
-  function applyFilter(filter: string) {
-    currentFilter = filter;
-
-    // Step 1: sort by filter membership
-    items.forEach(item => {
-      if (matchesFilter(item)) {
-        item.classList.remove('hidden');
-      } else {
-        item.classList.add('hidden');
-        item.classList.remove('hidden-more');
-      }
-    });
-
-    // Step 2: keep only the first BATCH visible among matching items
-    getMatchingItems().forEach((item, i) => {
-      if (i < BATCH) {
-        item.classList.remove('hidden-more');
-        initBlurUp(item);
-      } else {
-        item.classList.add('hidden-more');
-      }
-    });
-
-    updateMoreButton();
-  }
-
-  // ─── Load more ───────────────────────────────────────────────────────────────
-
-  function revealItem(item: HTMLElement, delay: number) {
-    item.classList.remove('hidden-more');
-    item.style.opacity = '0';
-    item.style.transform = 'translateY(20px)';
-    item.style.transition = `opacity 0.45s ${delay}s ease, transform 0.45s ${delay}s ease`;
-    // Double rAF ensures transition triggers after display:none is removed
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        item.style.opacity = '1';
-        item.style.transform = 'translateY(0)';
-      });
-    });
-    initBlurUp(item);
-  }
-
-  function loadMore() {
-    const toReveal = getMatchingItems()
-      .filter(item => item.classList.contains('hidden-more'))
-      .slice(0, BATCH);
-
-    toReveal.forEach((item, i) => revealItem(item, i * 0.04));
-    updateMoreButton();
-  }
-
-  // ─── Lightbox ────────────────────────────────────────────────────────────────
-
-  function getVisibleImages(): HTMLImageElement[] {
-    return items
-      .filter(item => isVisible(item))
-      .map(item => item.querySelector('img')!);
-  }
-
-  function openLightbox(src: string, alt: string, index: number) {
-    currentImages = getVisibleImages().map(img => img.src);
-    currentIndex = index;
-    lightboxImg.src = src;
-    lightboxImg.alt = alt;
-    lightbox.classList.add('open');
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    lightboxClose.focus();
-  }
-
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
-  function showPrev() {
-    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-    lightboxImg.src = currentImages[currentIndex];
-  }
-
-  function showNext() {
-    currentIndex = (currentIndex + 1) % currentImages.length;
-    lightboxImg.src = currentImages[currentIndex];
-  }
-
-  // ─── Event wiring ────────────────────────────────────────────────────────────
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      applyFilter(btn.dataset.filter!);
-    });
-  });
-
-  loadMoreBtn.addEventListener('click', loadMore);
-
-  document.querySelectorAll<HTMLButtonElement>('.portfolio__zoom').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const item = btn.closest<HTMLElement>('.portfolio__item')!;
-      const img = item.querySelector('img')!;
-      const idx = getVisibleImages().indexOf(img);
-      openLightbox(img.src, img.alt, idx);
-    });
-  });
-
-  items.forEach(item => {
-    item.addEventListener('click', () => {
-      if (!isVisible(item)) return;
-      const img = item.querySelector('img')!;
-      const idx = getVisibleImages().indexOf(img);
-      openLightbox(img.src, img.alt, idx);
-    });
-  });
-
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightboxPrev.addEventListener('click', showPrev);
-  lightboxNext.addEventListener('click', showNext);
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') showPrev();
-    if (e.key === 'ArrowRight') showNext();
-  });
-
-  // ─── Entrance animation (initial visible batch) ───────────────────────────
-
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const entranceObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          (entry.target as HTMLElement).style.opacity = '1';
-          (entry.target as HTMLElement).style.transform = 'translateY(0)';
-          entranceObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.05 }
-  );
-
-  // ─── Init ─────────────────────────────────────────────────────────────────
-
-  applyFilter('all');
-
-  if (!prefersReduced) {
-    items.filter(item => isVisible(item)).forEach((item, i) => {
-      item.style.opacity = '0';
-      item.style.transform = 'translateY(20px)';
-      item.style.transition = `opacity 0.5s ${i * 0.03}s ease, transform 0.5s ${i * 0.03}s ease`;
-      entranceObserver.observe(item);
-    });
-  }
-</script>
