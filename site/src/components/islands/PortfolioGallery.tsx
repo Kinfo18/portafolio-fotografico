@@ -17,7 +17,7 @@ interface Props {
   categories: Category[];
 }
 
-const BATCH = 10;
+const BATCH = 16;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -216,7 +216,7 @@ export default function PortfolioGallery({ photos, categories }: Props) {
 
       {lightboxIdx !== null && (
         <Lightbox
-          photos={visible}
+          photos={matching}
           initialIndex={lightboxIdx}
           onClose={() => setLightboxIdx(null)}
         />
