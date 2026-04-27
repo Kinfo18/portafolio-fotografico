@@ -19,6 +19,25 @@ interface Props {
 
 const BATCH = 10;
 
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+function Skeleton({ alt }: { alt: string }) {
+  return (
+    <div class="portfolio__skeleton" aria-hidden="true">
+      <div class="portfolio__skeleton-shine" />
+      <div class="portfolio__skeleton-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <div class="portfolio__skeleton-footer">
+        <span class="portfolio__skeleton-label">{alt}</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── PhotoItem ────────────────────────────────────────────────────────────────
 
 function PhotoItem({
@@ -46,6 +65,7 @@ function PhotoItem({
       onClick={onOpen}
     >
       <div class="portfolio__item-inner">
+        {!loaded && <Skeleton alt={photo.alt} />}
         <img
           ref={imgRef}
           src={photo.src}
@@ -55,17 +75,19 @@ function PhotoItem({
           class={loaded ? 'blur-img loaded' : 'blur-img'}
           onLoad={() => setLoaded(true)}
         />
-        <div class="portfolio__overlay" aria-hidden="true">
-          <button
-            class="portfolio__zoom"
-            aria-label={`Ver ${photo.alt} en pantalla completa`}
-            onClick={(e) => { e.stopPropagation(); onOpen(); }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-            </svg>
-          </button>
-        </div>
+        {loaded && (
+          <div class="portfolio__overlay" aria-hidden="true">
+            <button
+              class="portfolio__zoom"
+              aria-label={`Ver ${photo.alt} en pantalla completa`}
+              onClick={(e) => { e.stopPropagation(); onOpen(); }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
