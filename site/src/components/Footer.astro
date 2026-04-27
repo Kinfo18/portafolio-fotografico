@@ -9,7 +9,7 @@ const currentYear = new Date().getFullYear();
   <div class="container footer__inner">
     <div class="footer__brand">
       <a href="/" class="footer__logo" aria-label="Valentina Ríos Fotografía - Inicio">
-        <Image src={logoImg} alt="Logo Valentina Ríos Fotografía" width={36} height={36} format="webp" />
+        <Image src={logoImg} alt="Logo Valentina Ríos Fotografía" width={42} height={36} format="webp" densities={[1, 2]} quality={95} />
         <span>Valentina Ríos</span>
       </a>
       <p class="footer__tagline">
@@ -90,11 +90,9 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer__logo img {
-    width: 36px;
+    width: auto;
     height: 36px;
-    border-radius: 50%;
     object-fit: contain;
-    border: 2px solid rgba(255, 179, 200, 0.3);
   }
 
   .footer__logo span {
