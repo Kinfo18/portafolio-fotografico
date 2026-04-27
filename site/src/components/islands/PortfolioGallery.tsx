@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 
 export interface GalleryPhoto {
   src: string;
@@ -102,8 +102,8 @@ function Lightbox({
   onClose: () => void;
 }) {
   const [idx, setIdx] = useState(initialIndex);
-  const prev = () => setIdx(i => (i - 1 + photos.length) % photos.length);
-  const next = () => setIdx(i => (i + 1) % photos.length);
+  const prev = useCallback(() => setIdx(i => (i - 1 + photos.length) % photos.length), [photos.length]);
+  const next = useCallback(() => setIdx(i => (i + 1) % photos.length), [photos.length]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -118,7 +118,7 @@ function Lightbox({
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [photos.length, onClose]);
+  }, [prev, next, onClose]);
 
   return (
     <div

@@ -1,22 +1,26 @@
 import { useState, useEffect } from 'preact/hooks';
 
-const links = [
-  { href: '#portafolio', label: 'Portafolio' },
-  { href: '#sobre-mi', label: 'Sobre mí' },
-  { href: '#reconocimientos', label: 'Reconocimientos' },
-  { href: '#equipo', label: 'Equipo' },
-  { href: '#contacto', label: 'Contacto' },
-];
+interface NavLink { href: string; label: string }
 
-export default function NavToggle() {
+export default function NavToggle({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const navbar = document.getElementById('navbar');
-    const onScroll = () => navbar?.classList.toggle('scrolled', window.scrollY > 20);
+    let rafId: number | null = null;
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        navbar?.classList.toggle('scrolled', window.scrollY > 20);
+        rafId = null;
+      });
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const close = () => setOpen(false);

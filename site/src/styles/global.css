@@ -158,6 +158,12 @@ button {
   will-change: auto;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color1);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

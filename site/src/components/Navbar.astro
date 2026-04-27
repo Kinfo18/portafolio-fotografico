@@ -15,7 +15,7 @@ const navLinks = [
 <header class="navbar" id="navbar" role="banner">
   <nav class="navbar__inner container" aria-label="Navegación principal">
     <a href="/" class="navbar__logo" aria-label="Valentina Ríos Fotografía - Inicio">
-      <Image src={logoImg} alt="Valentina Ríos Fotografía" width={84} height={72} format="webp" quality={75} />
+      <Image src={logoImg} alt="Valentina Ríos Fotografía" width={84} height={72} format="webp" quality={75} fetchpriority="high" loading="eager" />
       <span class="navbar__name">Valentina Ríos</span>
     </a>
 
@@ -31,7 +31,7 @@ const navLinks = [
     <a href="#contacto" class="btn-primary navbar__cta">Trabajemos juntos</a>
 
     <!-- Isla: hamburger + menú móvil. client:load → hidrata al cargar la página -->
-    <NavToggle client:idle />
+    <NavToggle links={navLinks} client:idle />
   </nav>
 </header>
 
@@ -61,7 +61,7 @@ const navLinks = [
     display: flex;
     align-items: center;
     gap: 2rem;
-    height: 64px;
+    height: var(--nav-height);
   }
 
   .navbar__logo {

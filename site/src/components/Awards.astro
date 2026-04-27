@@ -76,7 +76,7 @@ const projects = [
           {awards.map(award => (
             <li class="awards__item">
               <div class="awards__item-header">
-                <span class="awards__badge awards__badge--{award.type.toLowerCase()}">{award.type}</span>
+                <span class={`awards__badge awards__badge--${award.type.toLowerCase()}`}>{award.type}</span>
                 <time class="awards__year" datetime={award.year.slice(0, 4)}>{award.year}</time>
               </div>
               <h4 class="awards__item-title">{award.title}</h4>
@@ -156,7 +156,7 @@ const projects = [
 
   .awards__col-title {
     font-family: var(--font-heading);
-    font-size: 0.8rem;
+    font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;

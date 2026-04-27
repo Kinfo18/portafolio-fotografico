@@ -79,7 +79,7 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
         <Image
           src={fotografaPrincipal}
           alt="Valentina Ríos Mendoza, fotógrafa documental"
-          width={420}
+          width={640}
           densities={[1, 2]}
           format="webp"
           quality={78}
@@ -109,8 +109,8 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
       </div>
 
       <div class="hero__floating-imgs">
-        <Image src={floatNaturaleza} alt="" width={120} format="avif" quality={70} loading="lazy" class="hero__float hero__float--1 blur-img" />
-        <Image src={floatRetrato} alt="" width={100} format="avif" quality={70} loading="lazy" class="hero__float hero__float--2 blur-img" />
+        <Image src={floatNaturaleza} alt="" width={180} format="avif" quality={70} loading="lazy" class="hero__float hero__float--1 blur-img" />
+        <Image src={floatRetrato} alt="" width={150} format="avif" quality={70} loading="lazy" class="hero__float hero__float--2 blur-img" />
       </div>
     </div>
   </div>
@@ -142,8 +142,8 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
 
   .hero__inner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 6vw, 6rem);
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(1.5rem, 4vw, 4rem);
     align-items: center;
     position: relative;
     z-index: 1;
@@ -265,7 +265,7 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
   .hero__visual {
     position: relative;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     opacity: 0;
     animation: fadeIn 0.9s 0.3s ease forwards;
   }
@@ -273,7 +273,19 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
   .hero__img-wrapper {
     position: relative;
     width: 100%;
-    max-width: 420px;
+    max-width: 600px;
+  }
+
+  .hero__img-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+    background: linear-gradient(to bottom, transparent 0%, var(--color5) 85%);
+    pointer-events: none;
+    z-index: 2;
   }
 
   .hero__img {
@@ -300,6 +312,7 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
     padding: 0.75rem 1rem;
     box-shadow: var(--shadow-md);
     animation: floatCard 4s ease-in-out infinite;
+    z-index: 3;
   }
 
   .hero__img-card svg {
@@ -309,13 +322,13 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
 
   .hero__img-card--top {
     top: 12%;
-    right: -8%;
+    right: -6%;
     animation-delay: 0s;
   }
 
   .hero__img-card--bottom {
     bottom: 15%;
-    left: -8%;
+    left: -6%;
     animation-delay: 2s;
   }
 
@@ -347,24 +360,25 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
     object-fit: cover;
     box-shadow: var(--shadow-lg);
     border: 3px solid var(--color5);
+    z-index: 4;
   }
 
   .hero__float--1 {
     top: -5%;
-    left: -12%;
-    width: 110px;
-    height: 80px;
+    left: -16%;
+    width: 155px;
+    height: 110px;
     transform: rotate(-6deg);
     animation: floatImg 5s 1s ease-in-out infinite;
   }
 
   .hero__float--2 {
-    bottom: 8%;
-    right: -10%;
-    width: 90px;
-    height: 115px;
+    bottom: 12%;
+    right: -14%;
+    width: 125px;
+    height: 160px;
     transform: rotate(5deg);
-    animation: floatImg 5.5s 0.5s ease-in-out infinite;
+    animation: floatImg2 5.5s 0.5s ease-in-out infinite;
   }
 
   .hero__scroll {
@@ -410,6 +424,11 @@ import floatRetrato from '../assets/images/fotografias/retratos/retrato_1.jpg';
   @keyframes floatImg {
     0%, 100% { transform: rotate(-6deg) translateY(0); }
     50% { transform: rotate(-6deg) translateY(-10px); }
+  }
+
+  @keyframes floatImg2 {
+    0%, 100% { transform: rotate(5deg) translateY(0); }
+    50% { transform: rotate(5deg) translateY(-10px); }
   }
 
   @keyframes scrollLine {
